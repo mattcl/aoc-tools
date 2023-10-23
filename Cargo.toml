@@ -1,0 +1,16 @@
+[package]
+name = "aoc-tools"
+version = "0.1.0"
+edition = "2021"
+authors = ["Matt Chun-Lum <matt@questionable.engineering>"]
+rust-version = "1.70.0"
+description = "A collection of tools for an Advent of Code CI pipeline."
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.71"
+clap = { version = "4.3", features = ["cargo", "derive", "env"] }
+serde = { version = "1.0.139", features = ["derive"] }
+serde_yaml = "0.9.22"
+toml = "0.8.4"
