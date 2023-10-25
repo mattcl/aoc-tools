@@ -3,14 +3,26 @@ name = "aoc-tools"
 version = "0.1.0"
 edition = "2021"
 authors = ["Matt Chun-Lum <matt@questionable.engineering>"]
-rust-version = "1.70.0"
 description = "A collection of tools for an Advent of Code CI pipeline."
+rust-version = "1.70.0"
+license = "MIT"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[profile.release]
+lto = true
 
 [dependencies]
 anyhow = "1.0.71"
-clap = { version = "4.3", features = ["cargo", "derive", "env"] }
+clap = { version = "4.3", features = ["cargo", "derive", "env", "wrap_help"] }
+console = "0.14"
+dirs = "5.0.1"
+figment = { version = "0.10.10", features = ["env", "toml"] }
 serde = { version = "1.0.139", features = ["derive"] }
+serde_json = "1.0"
 serde_yaml = "0.9.22"
+shell-words = "1.1.0"
 toml = "0.8.4"
+walkdir = "2.4.0"
+
+[dev-dependencies]
+assert_cmd = "2.0.12"
+assert_fs = "1.0.13"

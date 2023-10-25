@@ -1,0 +1,6 @@
+[participants.mattcl]
+username = "mattcl"
+location = "/home/matt/code/aoc2022"
+input_cmd = "ci/input_path.sh"
+entrypoint = "target/release/aoc run"
+is_solver = true

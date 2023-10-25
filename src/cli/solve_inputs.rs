@@ -1,0 +1,86 @@
+use std::{
+    collections::BTreeMap,
+    fs::File,
+    io::{BufWriter, Write},
+    path::PathBuf,
+};
+
+use anyhow::{anyhow, bail, Context, Result};
+use clap::Args;
+use walkdir::WalkDir;
+
+use crate::{aoc_project::Solution, config::Config, util::day_directory_name};
+
+/// Solve all the available inputs and store their solutions.
+#[derive(Debug, Clone, Args)]
+pub struct SolveInputs {
+    /// The root directory where inputs are stored.
+    ///
+    /// This assumes a `<day>_<padded number>` directory structure containing
+    /// the inputs.
+    inputs: PathBuf,
+}
+
+impl SolveInputs {
+    pub fn run(&self, config: &Config) -> Result<()> {
+        if !self.inputs.is_dir() {
+            bail!("Inputs must exist and be a directory");
+        }
+
+        let (_, solver) = config
+            .participants()
+            .iter()
+            .find(|(_, p)| p.is_solver())
+            .ok_or_else(|| anyhow!("Config does not specify at one participant as the solver"))?;
+
+        'days: for day in 1..=25 {
+            let day_directory_name = day_directory_name(day);
+            let day_directory = self.inputs.join(&day_directory_name);
+
+            if !day_directory.is_dir() {
+                println!("> No inputs for day {}", day);
+                continue;
+            }
+
+            println!("> Solving inputs for day {}", day);
+
+            // the BTreeMap should mean the generated json is stable instead of
+            // being sensitive to changing key ordering with a HashMap
+            let mut solutions: BTreeMap<String, Solution> = BTreeMap::default();
+
+            for entry in WalkDir::new(&day_directory)
+                .into_iter()
+                .filter_map(|e| e.ok())
+            {
+                let filename = entry.file_name().to_string_lossy();
+
+                // skip non-inputs
+                if !(filename.starts_with("input-") || filename.starts_with("challenge-input")) {
+                    continue;
+                }
+
+                let input = entry.path().canonicalize()?;
+                if let Some(solution) = solver.solve(day, &input).with_context(|| {
+                    format!("Failed to solve day {} for input {}", day, filename)
+                })? {
+                    solutions.insert(filename.to_string(), solution);
+                } else {
+                    println!("  Solver does not implement a solution for day {}", day);
+                    // don't bother with the rest of the input files or writing
+                    // out solutions
+                    continue 'days;
+                }
+            }
+
+            // create a file to store the solutions and write the solutions
+            let output = File::create(day_directory.join("solutions.json"))
+                .context("Failed to create file")?;
+            let mut writer = BufWriter::new(output);
+            serde_json::to_writer(&mut writer, &solutions)
+                .context("Failed to serialize to writer")?;
+            writer.flush()?;
+        }
+
+        Ok(())
+    }
+}
