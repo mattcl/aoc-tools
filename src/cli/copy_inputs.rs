@@ -2,9 +2,8 @@ use std::path::{Path, PathBuf};
 
 use anyhow::{Context, Result};
 use clap::Args;
-use console::style;
 
-use crate::{config::Config, util::day_directory_name};
+use crate::{config::Config, failure, highlight, success, util::day_directory_name};
 
 /// Copies the inputs for the configured participants to the specified location.
 ///
@@ -46,13 +45,13 @@ impl CopyInputs {
                         self.copy_input(&path, &dest)?;
                         println!(
                             "{}",
-                            style(format!("  Copied input from {}", project.username())).green()
+                            success!(format!("  Copied input from {}", project.username()))
                         )
                     }
                     Ok(None) => {
                         println!(
                             "{}",
-                            style(format!("  No input for {}", project.username())).yellow()
+                            highlight!(format!("  No input for {}", project.username()))
                         );
                     }
                     // if we fail to run the input command, we don't want to
@@ -60,11 +59,10 @@ impl CopyInputs {
                     Err(_) => {
                         println!(
                             "{}",
-                            style(format!(
+                            highlight!(format!(
                                 "  Input command did not succeed for {}",
                                 project.username()
                             ))
-                            .yellow()
                         );
                     }
                 }
@@ -78,11 +76,10 @@ impl CopyInputs {
         if !from.is_file() {
             println!(
                 "{}",
-                style(format!(
+                failure!(format!(
                     "  '{}' does not exist or is not a file",
                     from.to_string_lossy()
                 ))
-                .red()
             );
             return Ok(());
         }

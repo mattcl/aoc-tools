@@ -8,6 +8,34 @@ use crate::config::Config;
 mod copy_inputs;
 mod solve_inputs;
 
+#[macro_export]
+macro_rules! attention {
+    ($msg:expr) => {
+        console::Style::new().magenta().apply_to($msg)
+    };
+}
+
+#[macro_export]
+macro_rules! highlight {
+    ($msg:expr) => {
+        console::Style::new().yellow().apply_to($msg)
+    };
+}
+
+#[macro_export]
+macro_rules! success {
+    ($msg:expr) => {
+        console::Style::new().green().apply_to($msg)
+    };
+}
+
+#[macro_export]
+macro_rules! failure {
+    ($msg:expr) => {
+        console::Style::new().red().apply_to($msg)
+    };
+}
+
 #[derive(Debug, Clone, Parser)]
 pub struct Cli {
     /// The config file to use.

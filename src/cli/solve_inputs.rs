@@ -9,7 +9,7 @@ use anyhow::{anyhow, bail, Context, Result};
 use clap::Args;
 use walkdir::WalkDir;
 
-use crate::{aoc_project::Solution, config::Config, util::day_directory_name};
+use crate::{aoc_project::Solution, config::Config, highlight, success, util::day_directory_name};
 
 /// Solve all the available inputs and store their solutions.
 #[derive(Debug, Clone, Args)]
@@ -65,11 +65,19 @@ impl SolveInputs {
                 })? {
                     solutions.insert(filename.to_string(), solution);
                 } else {
-                    println!("  Solver does not implement a solution for day {}", day);
+                    println!(
+                        "  {}",
+                        highlight!(format!(
+                            "Solver does not implement a solution for day {}",
+                            day
+                        ))
+                    );
                     // don't bother with the rest of the input files or writing
                     // out solutions
                     continue 'days;
                 }
+
+                println!("  {}", success!(format!("Solved {}", filename)));
             }
 
             // create a file to store the solutions and write the solutions

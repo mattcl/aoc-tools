@@ -13,7 +13,7 @@ lto = true
 [dependencies]
 anyhow = "1.0.71"
 clap = { version = "4.3", features = ["cargo", "derive", "env", "wrap_help"] }
-console = "0.14"
+console = "0.15"
 dirs = "5.0.1"
 figment = { version = "0.10.10", features = ["env", "toml"] }
 serde = { version = "1.0.139", features = ["derive"] }

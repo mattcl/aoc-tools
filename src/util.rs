@@ -3,6 +3,7 @@ pub fn day_directory_name(day: usize) -> String {
     format!("day_{:03}", day)
 }
 
+#[cfg(test)]
 mod tests {
     #[test]
     fn day_directory_name() {

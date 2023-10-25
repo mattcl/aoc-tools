@@ -158,6 +158,7 @@ pub struct Solution {
     part_two: Value,
 }
 
+#[cfg(test)]
 mod tests {
     use super::*;
 
