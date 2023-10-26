@@ -14,6 +14,7 @@ use crate::solution::Solution;
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct AocProject {
     username: String,
+    repo: String,
     location: PathBuf,
     input_cmd: String,
     entrypoint: String,
@@ -24,6 +25,14 @@ pub struct AocProject {
 impl AocProject {
     pub fn username(&self) -> &str {
         &self.username
+    }
+
+    pub fn repo(&self) -> &str {
+        &self.repo
+    }
+
+    pub fn entrypoint(&self) -> &str {
+        &self.entrypoint
     }
 
     pub fn is_solver(&self) -> bool {
@@ -129,7 +138,7 @@ impl AocProject {
             bail!("Inputs provided to the solver must be absolute");
         }
 
-        let parts = shell_words::split(&self.entrypoint).with_context(|| {
+        let parts = shell_words::split(&self.entrypoint()).with_context(|| {
             format!(
                 "Failed to parse entrypoint command for project: {}",
                 self.username()
@@ -162,6 +171,7 @@ mod tests {
     fn join_with_location() {
         let project = AocProject {
             username: "mattcl".into(),
+            repo: "https://ancalagon.black/foo".into(),
             location: "/foo/bar".into(),
             input_cmd: "echo 'not implemented'".into(),
             entrypoint: "echo 'not implemented'".into(),

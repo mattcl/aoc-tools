@@ -1,6 +1,7 @@
 [participants.mattcl]
 username = "mattcl"
+repo = "https://github.com/mattcl/aoc2022"
 location = "/home/matt/code/aoc2022"
 input_cmd = "ci/input_path.sh"
-entrypoint = "target/release/aoc run"
+entrypoint = "/home/matt/code/aoc2022/target/release/aoc run"
 is_solver = true

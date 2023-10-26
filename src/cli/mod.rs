@@ -5,6 +5,7 @@ use clap::{Parser, Subcommand};
 
 use crate::config::Config;
 
+mod bench;
 mod check_solutions;
 mod copy_inputs;
 mod solve_inputs;
@@ -62,6 +63,7 @@ impl Cli {
 
 #[derive(Debug, Clone, Subcommand)]
 pub enum Commands {
+    Bench(bench::Bench),
     CheckSolutions(check_solutions::CheckSolutions),
     CopyInputs(copy_inputs::CopyInputs),
     SolveInputs(solve_inputs::SolveInputs),
@@ -70,6 +72,7 @@ pub enum Commands {
 impl Commands {
     pub fn run(&self, config: &Config) -> Result<()> {
         match self {
+            Self::Bench(cmd) => cmd.run(config),
             Self::CheckSolutions(cmd) => cmd.run(config),
             Self::CopyInputs(cmd) => cmd.run(config),
             Self::SolveInputs(cmd) => cmd.run(config),

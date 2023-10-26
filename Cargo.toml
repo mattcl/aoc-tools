@@ -16,12 +16,15 @@ clap = { version = "4.3", features = ["cargo", "derive", "env", "wrap_help"] }
 console = "0.15"
 dirs = "5.0.1"
 figment = { version = "0.10.10", features = ["env", "toml"] }
+itertools = "0.11.0"
+minijinja = "1.0.9"
 serde = { version = "1.0.139", features = ["derive"] }
 serde_json = "1.0"
 serde_yaml = "0.9.22"
 shell-words = "1.1.0"
 toml = "0.8.4"
 walkdir = "2.4.0"
+which = "5.0.0"
 
 [dev-dependencies]
 assert_cmd = "2.0.12"
