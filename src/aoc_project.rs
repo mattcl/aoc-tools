@@ -8,6 +8,8 @@ use anyhow::{anyhow, bail, Context, Result};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
+use crate::solution::Solution;
+
 /// A representation of a particpating AOC project.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct AocProject {
@@ -150,12 +152,6 @@ impl AocProject {
 
         Ok(cmd)
     }
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
-pub struct Solution {
-    part_one: Value,
-    part_two: Value,
 }
 
 #[cfg(test)]

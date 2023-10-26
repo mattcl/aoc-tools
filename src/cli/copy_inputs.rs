@@ -23,14 +23,12 @@ pub struct CopyInputs {
 impl CopyInputs {
     pub fn run(&self, config: &Config) -> Result<()> {
         for day in 1..=25 {
+            println!();
             let day_directory_name = day_directory_name(day);
             let day_directory = self.destination.join(&day_directory_name);
 
             // fetch all of the inputs
-            println!(
-                "> Copying inputs for day {} to {}",
-                day, &day_directory_name
-            );
+            println!("> Day {}: copying inputs to {}", day, &day_directory_name);
 
             if !day_directory.is_dir() {
                 println!("  Destination directory does not exist. Creating it.");

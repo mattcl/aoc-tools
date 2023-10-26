@@ -1,5 +1,4 @@
 use std::{
-    collections::BTreeMap,
     fs::File,
     io::{BufWriter, Write},
     path::PathBuf,
@@ -9,9 +8,12 @@ use anyhow::{anyhow, bail, Context, Result};
 use clap::Args;
 use walkdir::WalkDir;
 
-use crate::{aoc_project::Solution, config::Config, highlight, success, util::day_directory_name};
+use crate::{config::Config, highlight, solution::Solutions, success, util::day_directory_name};
 
 /// Solve all the available inputs and store their solutions.
+///
+/// This will create a solutions.json file for each day's worth of inputs, and
+/// assumes the specified inputs path to have paths like day_001, day_002, etc.
 #[derive(Debug, Clone, Args)]
 pub struct SolveInputs {
     /// The root directory where inputs are stored.
@@ -34,6 +36,8 @@ impl SolveInputs {
             .ok_or_else(|| anyhow!("Config does not specify at one participant as the solver"))?;
 
         'days: for day in 1..=25 {
+            println!();
+
             let day_directory_name = day_directory_name(day);
             let day_directory = self.inputs.join(&day_directory_name);
 
@@ -42,11 +46,11 @@ impl SolveInputs {
                 continue;
             }
 
-            println!("> Solving inputs for day {}", day);
+            println!("> Day {}: solving inputs for day", day);
 
             // the BTreeMap should mean the generated json is stable instead of
             // being sensitive to changing key ordering with a HashMap
-            let mut solutions: BTreeMap<String, Solution> = BTreeMap::default();
+            let mut solutions = Solutions::default();
 
             for entry in WalkDir::new(&day_directory)
                 .into_iter()
