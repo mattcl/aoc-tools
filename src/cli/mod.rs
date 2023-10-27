@@ -41,6 +41,7 @@ macro_rules! failure {
 }
 
 #[derive(Debug, Clone, Parser)]
+#[command(author, version)]
 pub struct Cli {
     /// The config file to use.
     ///
