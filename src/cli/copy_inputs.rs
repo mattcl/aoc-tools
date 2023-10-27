@@ -35,7 +35,11 @@ impl CopyInputs {
                 std::fs::create_dir(&day_directory).context("Failed to make directory")?;
             }
 
-            for (_, project) in config.participants().iter().filter(|(_, p)| !p.skip_inputs()) {
+            for (_, project) in config
+                .participants()
+                .iter()
+                .filter(|(_, p)| !p.skip_inputs())
+            {
                 match project.input_path(day) {
                     Ok(Some(path)) => {
                         let output_name = format!("input-{}", project.username());
