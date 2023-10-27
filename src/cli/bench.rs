@@ -101,6 +101,7 @@ impl Bench {
         let mut cmd = Command::new("hyperfine");
         cmd.current_dir(&day_directory);
         cmd.env("AOC_DAY", self.day.to_string());
+        cmd.env("AOC_CI", "true");
         cmd.args([
             // warmup 3 times
             "-w",

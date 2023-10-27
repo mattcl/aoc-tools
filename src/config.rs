@@ -1,4 +1,4 @@
-use std::{collections::HashMap, path::Path};
+use std::{collections::BTreeMap, path::Path};
 
 use anyhow::{Context, Result};
 use figment::{
@@ -13,7 +13,7 @@ use crate::aoc_project::AocProject;
 #[derive(Debug, Clone, Eq, PartialEq, Deserialize)]
 pub struct Config {
     general: General,
-    participants: HashMap<String, AocProject>,
+    participants: BTreeMap<String, AocProject>,
 }
 
 #[derive(Debug, Clone, Eq, PartialEq, Deserialize)]
@@ -30,7 +30,7 @@ impl Config {
             .context("Invalid config file")
     }
 
-    pub fn participants(&self) -> &HashMap<String, AocProject> {
+    pub fn participants(&self) -> &BTreeMap<String, AocProject> {
         &self.participants
     }
 

@@ -28,10 +28,6 @@ impl AocProject {
         &self.username
     }
 
-    pub fn repo(&self) -> &Url {
-        &self.repo
-    }
-
     pub fn entrypoint(&self) -> &str {
         &self.entrypoint
     }
@@ -87,6 +83,7 @@ impl AocProject {
         let mut cmd = Command::new(prog);
 
         cmd.env("AOC_DAY", day.to_string());
+        cmd.env("AOC_CI", "true");
         cmd.current_dir(&self.location);
 
         if !args.is_empty() {
@@ -154,6 +151,7 @@ impl AocProject {
         cmd.env("AOC_DAY", day.to_string());
         cmd.env("AOC_INPUT", input.to_string_lossy().to_string());
         cmd.env("AOC_JSON", "true");
+        cmd.env("AOC_CI", "true");
         cmd.current_dir(&self.location);
 
         if !args.is_empty() {
@@ -172,7 +170,7 @@ mod tests {
     fn join_with_location() {
         let project = AocProject {
             username: "mattcl".into(),
-            repo: "https://ancalagon.black/foo".into(),
+            repo: Url::from_str("https://ancalagon.black/foo").unwrap(),
             location: "/foo/bar".into(),
             input_cmd: "echo 'not implemented'".into(),
             entrypoint: "echo 'not implemented'".into(),

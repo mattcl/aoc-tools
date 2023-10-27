@@ -10,6 +10,7 @@ mod check_solutions;
 mod copy_inputs;
 mod report;
 mod solve_inputs;
+mod summary;
 
 #[macro_export]
 macro_rules! attention {
@@ -69,6 +70,7 @@ pub enum Commands {
     CopyInputs(copy_inputs::CopyInputs),
     Report(report::Report),
     SolveInputs(solve_inputs::SolveInputs),
+    Summary(summary::Summary),
 }
 
 impl Commands {
@@ -79,6 +81,7 @@ impl Commands {
             Self::CopyInputs(cmd) => cmd.run(config),
             Self::Report(cmd) => cmd.run(config),
             Self::SolveInputs(cmd) => cmd.run(config),
+            Self::Summary(cmd) => cmd.run(config),
         }
     }
 }
