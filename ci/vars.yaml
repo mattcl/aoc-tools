@@ -1,0 +1,5 @@
+bin:
+  name: aoc-tools
+  bin-name: aoc-tools
+  repo:
+    uri: https://github.com/mattcl/aoc-tools.git
