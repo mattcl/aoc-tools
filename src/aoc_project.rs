@@ -21,6 +21,8 @@ pub struct AocProject {
     entrypoint: String,
     #[serde(default)]
     is_solver: bool,
+    #[serde(default)]
+    skip_inputs: bool,
 }
 
 impl AocProject {
@@ -34,6 +36,10 @@ impl AocProject {
 
     pub fn is_solver(&self) -> bool {
         self.is_solver
+    }
+
+    pub fn skip_inputs(&self) -> bool {
+        self.skip_inputs
     }
 
     pub fn input_path(&self, day: usize) -> Result<Option<PathBuf>> {
@@ -175,6 +181,7 @@ mod tests {
             input_cmd: "echo 'not implemented'".into(),
             entrypoint: "echo 'not implemented'".into(),
             is_solver: false,
+            skip_inputs: false,
         };
 
         let expected = PathBuf::from_str("/foo/bar/baz.txt").unwrap();

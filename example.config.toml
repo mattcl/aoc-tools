@@ -16,3 +16,4 @@ repo = "https://github.com/mattcl/aoc2023"
 location = "/home/matt/code/aoc2022"
 input_cmd = "ci/input_path.sh"
 entrypoint = "/home/matt/code/aoc2022/target/debug/aoc run"
+skip_inputs = true
