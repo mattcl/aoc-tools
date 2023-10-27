@@ -6,12 +6,20 @@ use figment::{
     Figment,
 };
 use serde::Deserialize;
+use url::Url;
 
 use crate::aoc_project::AocProject;
 
-#[derive(Debug, Clone, Default, Eq, PartialEq, Deserialize)]
+#[derive(Debug, Clone, Eq, PartialEq, Deserialize)]
 pub struct Config {
+    general: General,
     participants: HashMap<String, AocProject>,
+}
+
+#[derive(Debug, Clone, Eq, PartialEq, Deserialize)]
+pub struct General {
+    year: usize,
+    pipeline_url: Url,
 }
 
 impl Config {
@@ -24,5 +32,13 @@ impl Config {
 
     pub fn participants(&self) -> &HashMap<String, AocProject> {
         &self.participants
+    }
+
+    pub fn year(&self) -> usize {
+        self.general.year
+    }
+
+    pub fn pipeline_url(&self) -> &Url {
+        &self.general.pipeline_url
     }
 }

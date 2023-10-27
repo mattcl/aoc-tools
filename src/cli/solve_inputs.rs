@@ -8,7 +8,13 @@ use anyhow::{anyhow, bail, Context, Result};
 use clap::Args;
 use walkdir::WalkDir;
 
-use crate::{config::Config, highlight, solution::Solutions, success, util::day_directory_name};
+use crate::{
+    config::Config,
+    highlight,
+    solution::Solutions,
+    success,
+    util::{day_directory_name, sanitize_value_for_display},
+};
 
 /// Solve all the available inputs and store their solutions.
 ///
@@ -84,13 +90,37 @@ impl SolveInputs {
                 println!("  {}", success!(format!("Solved {}", filename)));
             }
 
-            // create a file to store the solutions and write the solutions
+            // create a file to store the json solutions and write the solutions
             let output = File::create(day_directory.join("solutions.json"))
                 .context("Failed to create file")?;
             let mut writer = BufWriter::new(output);
             serde_json::to_writer(&mut writer, &solutions)
                 .context("Failed to serialize to writer")?;
             writer.flush()?;
+
+            // create a file to store the markdown solutions and write the
+            // solutions
+            let mut solutions_markdown = vec![
+                "| Input | Part One | Part Two |".to_string(),
+                "|:---|:---|:---|".to_string(),
+            ];
+
+            for (name, solution) in solutions.iter() {
+                solutions_markdown.push(format!(
+                    "|{}|<pre>{}</pre>|<pre>{}</pre>|",
+                    name,
+                    sanitize_value_for_display(solution.part_one()),
+                    sanitize_value_for_display(solution.part_two()),
+                ));
+            }
+
+            let markdown = solutions_markdown.join("\n");
+
+            let mut output = File::create(day_directory.join("solutions.md"))
+                .context("Failed to create file")?;
+            output
+                .write_all(markdown.as_bytes())
+                .context("Failed to write file")?;
         }
 
         Ok(())

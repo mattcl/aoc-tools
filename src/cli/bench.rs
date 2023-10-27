@@ -1,16 +1,21 @@
-use std::{path::PathBuf, process::Command};
+use std::{
+    fs::File,
+    io::{BufWriter, Write},
+    path::PathBuf,
+    process::Command,
+};
 
-use anyhow::{Result, bail, Context};
+use anyhow::{bail, Context, Result};
 use clap::Args;
 use itertools::Itertools;
 use which::which;
 
-use crate::{config::Config, util::day_directory_name, solution::Solutions, highlight, success};
+use crate::{config::Config, highlight, solution::Solutions, success, util::day_directory_name};
 
 /// Run comparative benchmarks for a given day between the config participants.
 ///
-/// This produces a file named benches_raw.json in the directory for the given
-/// day.
+/// This produces a files named benches.md and benches_raw.csv in the directory
+/// for the given day.
 ///
 /// This requires hyperfine to be installed.
 ///
@@ -55,7 +60,11 @@ impl Bench {
         let solutions = Solutions::from_file(solution_file)?;
 
         // get the official inputs
-        let inputs = solutions.keys().filter(|n| n.starts_with("input-")).join(",");
+        let inputs_raw: Vec<_> = solutions
+            .keys()
+            .filter(|n| n.starts_with("input-"))
+            .collect();
+        let inputs = inputs_raw.iter().join(",");
 
         if inputs.is_empty() {
             bail!("unexpected: no official inputs in solutions file");
@@ -63,15 +72,18 @@ impl Bench {
 
         // we need to filter out the projects that will not solve the current
         // day by attempting to get a solution for any of the inputs
-        let canary = day_directory.join(
-            solutions
-                .keys()
-                .filter(|n| n.starts_with("input-"))
-                .next()
-                .unwrap() // unwrap is safe because we actually checked already
-        ).canonicalize()?;
+        let canary = day_directory
+            .join(
+                solutions
+                    .keys()
+                    .filter(|n| n.starts_with("input-"))
+                    .next()
+                    .unwrap(), // unwrap is safe because we actually checked already
+            )
+            .canonicalize()?;
 
-        let mut candidates: Vec<_> = config.participants()
+        let mut candidates: Vec<_> = config
+            .participants()
             .iter()
             .filter(|(_, p)| matches!(p.solve(self.day, &canary), Ok(Some(_))))
             .collect();
@@ -79,7 +91,10 @@ impl Bench {
         candidates.sort_by(|a, b| a.0.cmp(&b.0));
 
         if candidates.is_empty() {
-            println!("  {}", highlight!("No participants solve the specified day"));
+            println!(
+                "  {}",
+                highlight!("No participants solve the specified day")
+            );
             return Ok(());
         }
 
@@ -88,21 +103,30 @@ impl Bench {
         cmd.env("AOC_DAY", self.day.to_string());
         cmd.args([
             // warmup 3 times
-            "-w", "3",
+            "-w",
+            "3",
             // at least 10 runs
-            "-m", "10",
+            "-m",
+            "10",
             // at most 100 runs
-            "-M", "200",
+            "-M",
+            "200",
             // iterate for each input
-            "-L", "input", &inputs,
-            // output json
-            "--export-json", "benches_raw.json",
+            "-L",
+            "input",
+            &inputs,
+            // sort by the execution time instead of order of specification
+            "--sort",
+            "mean-time",
+            // export in various formats
+            "--export-markdown",
+            "benches.md",
+            "--export-csv",
+            "benches_raw.csv",
         ]);
 
-        // give names to the commands and indicate the projects we're benching
         println!("  Benchmarking the following projects:");
         for (name, _) in candidates.iter() {
-            cmd.args(["-n", &format!("{} {{input}}", name)]);
             println!("  {}", success!(name));
         }
 
@@ -112,8 +136,45 @@ impl Bench {
 
         let status = cmd.status().context("Failed to execute hyperfine")?;
         if !status.success() {
-            bail!("hyperfine did not exit successfully")
+            bail!("hyperfine did not exit successfully");
         }
+
+        // write the list of participants for this day's benchmarks
+        let mut participants_record: Vec<_> = candidates.iter().map(|(name, _)| name).collect();
+        participants_record.sort();
+        let output = File::create(day_directory.join("participants.json"))
+            .context("Failed to create participants file")?;
+        let mut writer = BufWriter::new(output);
+        serde_json::to_writer(&mut writer, &participants_record)
+            .context("Failed to write participants")?;
+        writer.flush()?;
+
+        // Hyperfine's combinations of command names and inputs don't allow for
+        // what we want to do, so we're going to rewrite the contents of the
+        // generated bench markdown to be what we want. This is memory
+        // inefficient with all the string replacements, but it probably won't
+        // be too bad. If at some point hyperfine allows for us to do this in a
+        // better way, we can get rid of this code.
+        let mut bench_contents = std::fs::read_to_string(day_directory.join("benches.md"))?;
+
+        // we're going to change the header of the markdown table
+        bench_contents = bench_contents.replacen("Command", "Participant | Input", 1);
+        // and the alignment spec
+        bench_contents = bench_contents.replacen(":---", ":---|:---", 1);
+
+        // now we're going to replace the command name and add the inputs in a
+        // separate column.
+        for (name, project) in candidates.iter() {
+            for input_name in inputs_raw.iter() {
+                let needle = format!("`AOC_INPUT={} {}`", input_name, project.entrypoint());
+                let replacement = format!("{} | {}", name, input_name);
+                bench_contents = bench_contents.replacen(&needle, &replacement, 1);
+            }
+        }
+
+        // finally, write that file back to disk
+        let mut bench_out = File::create(day_directory.join("benches.md"))?;
+        bench_out.write_all(bench_contents.as_bytes())?;
 
         Ok(())
     }

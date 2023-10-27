@@ -24,6 +24,14 @@ impl Solution {
         self.part_one.to_string().trim() == other.part_one.to_string().trim()
             && self.part_two.to_string().trim() == other.part_two.to_string().trim()
     }
+
+    pub fn part_one(&self) -> &Value {
+        &self.part_one
+    }
+
+    pub fn part_two(&self) -> &Value {
+        &self.part_two
+    }
 }
 
 impl Display for Solution {
@@ -31,8 +39,8 @@ impl Display for Solution {
         write!(
             f,
             "part_one: {}\npart_two: {}",
-            self.part_one.to_string(),
-            self.part_two.to_string()
+            self.part_one().to_string(),
+            self.part_two().to_string()
         )
     }
 }

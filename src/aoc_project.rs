@@ -7,6 +7,7 @@ use std::{
 use anyhow::{anyhow, bail, Context, Result};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
+use url::Url;
 
 use crate::solution::Solution;
 
@@ -14,7 +15,7 @@ use crate::solution::Solution;
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct AocProject {
     username: String,
-    repo: String,
+    repo: Url,
     location: PathBuf,
     input_cmd: String,
     entrypoint: String,
@@ -27,7 +28,7 @@ impl AocProject {
         &self.username
     }
 
-    pub fn repo(&self) -> &str {
+    pub fn repo(&self) -> &Url {
         &self.repo
     }
 
