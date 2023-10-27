@@ -39,8 +39,8 @@ impl Display for Solution {
         write!(
             f,
             "part_one: {}\npart_two: {}",
-            self.part_one().to_string(),
-            self.part_two().to_string()
+            self.part_one(),
+            self.part_two()
         )
     }
 }

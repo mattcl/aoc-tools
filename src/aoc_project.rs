@@ -136,7 +136,7 @@ impl AocProject {
             bail!("Inputs provided to the solver must be absolute");
         }
 
-        let parts = shell_words::split(&self.entrypoint()).with_context(|| {
+        let parts = shell_words::split(self.entrypoint()).with_context(|| {
             format!(
                 "Failed to parse entrypoint command for project: {}",
                 self.username()

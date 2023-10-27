@@ -45,7 +45,7 @@ impl Report {
             .context("Failed to get template")?;
 
         let day_directory_name = day_directory_name(self.day);
-        let day_directory = self.inputs.join(&day_directory_name);
+        let day_directory = self.inputs.join(day_directory_name);
 
         if !day_directory.is_dir() {
             bail!(
@@ -98,7 +98,7 @@ impl Report {
                 output_dest.clone()
             };
 
-            let mut outfile = File::create(&outpath).context("Failed to create output file")?;
+            let mut outfile = File::create(outpath).context("Failed to create output file")?;
             outfile
                 .write_all(rendered.as_bytes())
                 .context("Failed to write output file")?;

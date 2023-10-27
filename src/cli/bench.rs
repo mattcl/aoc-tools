@@ -74,11 +74,7 @@ impl Bench {
         // day by attempting to get a solution for any of the inputs
         let canary = day_directory
             .join(
-                solutions
-                    .keys()
-                    .filter(|n| n.starts_with("input-"))
-                    .next()
-                    .unwrap(), // unwrap is safe because we actually checked already
+                solutions.keys().find(|n| n.starts_with("input-")).unwrap(), // unwrap is safe because we actually checked already
             )
             .canonicalize()?;
 
@@ -88,7 +84,7 @@ impl Bench {
             .filter(|(_, p)| matches!(p.solve(self.day, &canary), Ok(Some(_))))
             .collect();
 
-        candidates.sort_by(|a, b| a.0.cmp(&b.0));
+        candidates.sort_by(|a, b| a.0.cmp(b.0));
 
         if candidates.is_empty() {
             println!(

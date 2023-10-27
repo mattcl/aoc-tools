@@ -18,9 +18,9 @@ pub fn day_directory_name(day: usize) -> String {
 pub fn sanitize_value_for_display(value: &Value) -> String {
     match value {
         Value::String(s) => s
-            .replace(".", " ")
-            .replace("#", "&#9608;")
-            .replace("\n", "<br>"),
+            .replace('.', " ")
+            .replace('#', "&#9608;")
+            .replace('\n', "<br>"),
         x => x.to_string(),
     }
 }
