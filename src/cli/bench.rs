@@ -128,7 +128,10 @@ impl Bench {
         }
 
         for (_, project) in candidates.iter() {
-            cmd.arg(format!("AOC_INPUT={{input}} {}", project.entrypoint()));
+            cmd.arg(format!(
+                "AOC_INPUT={{input}} {}",
+                project.bench_entrypoint()
+            ));
         }
 
         let status = cmd.status().context("Failed to execute hyperfine")?;

@@ -20,6 +20,8 @@ pub struct AocProject {
     input_cmd: String,
     entrypoint: String,
     #[serde(default)]
+    bench_entrypoint: Option<String>,
+    #[serde(default)]
     is_solver: bool,
     #[serde(default)]
     skip_inputs: bool,
@@ -32,6 +34,13 @@ impl AocProject {
 
     pub fn entrypoint(&self) -> &str {
         &self.entrypoint
+    }
+
+    pub fn bench_entrypoint(&self) -> &str {
+        self.bench_entrypoint
+            .as_ref()
+            .map(|e| e.as_str())
+            .unwrap_or(self.entrypoint())
     }
 
     pub fn is_solver(&self) -> bool {
@@ -179,6 +188,7 @@ mod tests {
             location: "/foo/bar".into(),
             input_cmd: "echo 'not implemented'".into(),
             entrypoint: "echo 'not implemented'".into(),
+            bench_entrypoint: None,
             is_solver: false,
             skip_inputs: false,
         };
