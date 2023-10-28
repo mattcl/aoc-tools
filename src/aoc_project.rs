@@ -158,7 +158,6 @@ impl AocProject {
         cmd.env("AOC_INPUT", input.to_string_lossy().to_string());
         cmd.env("AOC_JSON", "true");
         cmd.env("AOC_CI", "true");
-        cmd.current_dir(&self.location);
 
         if !args.is_empty() {
             cmd.args(args);
