@@ -38,8 +38,7 @@ impl AocProject {
 
     pub fn bench_entrypoint(&self) -> &str {
         self.bench_entrypoint
-            .as_ref()
-            .map(|e| e.as_str())
+            .as_deref()
             .unwrap_or(self.entrypoint())
     }
 
