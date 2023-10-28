@@ -19,6 +19,7 @@ pub struct AocProject {
     location: PathBuf,
     input_cmd: String,
     entrypoint: String,
+    language: String,
     #[serde(default)]
     bench_entrypoint: Option<String>,
     #[serde(default)]
@@ -187,6 +188,7 @@ mod tests {
             location: "/foo/bar".into(),
             input_cmd: "echo 'not implemented'".into(),
             entrypoint: "echo 'not implemented'".into(),
+            language: "cobol".into(),
             bench_entrypoint: None,
             is_solver: false,
             skip_inputs: false,

@@ -6,6 +6,7 @@ year = 2022
 username = "mattcl"
 repo = "https://github.com/mattcl/aoc2022"
 location = "/home/matt/code/aoc2022"
+language = "rust"
 input_cmd = "ci/input_path.sh"
 entrypoint = "aoc run"
 is_solver = true

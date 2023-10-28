@@ -13,5 +13,5 @@ input, and are requested to conform to the following specification:
 
 ## Participants
 {% for project in participants %}
-- [{{ project.username }}]({{ project.repo }})
+- [{{ project.username }}]({{ project.repo }}) ({{ project.language }})
 {%- endfor %}

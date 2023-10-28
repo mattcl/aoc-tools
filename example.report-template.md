@@ -14,7 +14,7 @@ to IO and other factors.
 
 ## Participants (with solutions for day {{ day }})
 {% for project in participants %}
-- [{{ project.username }}]({{ project.repo }})
+- [{{ project.username }}]({{ project.repo }}) ({{ project.language }})
 {%- endfor %}
 
 
