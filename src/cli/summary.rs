@@ -39,6 +39,7 @@ impl Summary {
         let rendered = summary_template
             .render(context! {
                 year => config.year(),
+                pipeline_url => config.pipeline_url(),
                 participants,
             })
             .context("Failed to render template")?;
