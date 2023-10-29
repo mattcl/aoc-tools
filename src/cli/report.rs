@@ -1,10 +1,10 @@
 use std::{collections::HashSet, fs::File, io::Write, path::PathBuf};
 
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result};
 use clap::Args;
 use minijinja::{context, Environment};
 
-use crate::{config::Config, success, util::day_directory_name};
+use crate::{config::Config, highlight, success, util::day_directory_name};
 
 /// Generates a benchmark report for a given day.
 #[derive(Debug, Clone, Args)]
@@ -48,10 +48,14 @@ impl Report {
         let day_directory = self.inputs.join(day_directory_name);
 
         if !day_directory.is_dir() {
-            bail!(
-                "The input directory does not exist: {}",
-                day_directory.display()
+            eprintln!(
+                "{}",
+                highlight!(format!(
+                    "The computed input directory does not exist. Doing nothing. ({})",
+                    day_directory.display()
+                ))
             );
+            return Ok(());
         }
 
         // we need to determine the list of participants that actually solve
