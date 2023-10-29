@@ -25,6 +25,14 @@ impl Solution {
             && self.part_two.to_string().trim() == other.part_two.to_string().trim()
     }
 
+    /// Compare a solution for the last day of the event.
+    ///
+    /// This is clunky, but day 25 only has one part, so we need to disregard
+    /// whatever people put as the part two solution.
+    pub fn last_day_compare(&self, other: &Self) -> bool {
+        self.part_one.to_string().trim() == other.part_one.to_string().trim()
+    }
+
     pub fn part_one(&self) -> &Value {
         &self.part_one
     }
