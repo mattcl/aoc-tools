@@ -1,16 +1,7 @@
-use std::path::PathBuf;
+mod ci;
 
 use anyhow::Result;
 use clap::{Parser, Subcommand};
-
-use crate::config::Config;
-
-mod bench;
-mod check_solutions;
-mod copy_inputs;
-mod report;
-mod solve_inputs;
-mod summary;
 
 #[macro_export]
 macro_rules! attention {
@@ -43,12 +34,6 @@ macro_rules! failure {
 #[derive(Debug, Clone, Parser)]
 #[command(author, version)]
 pub struct Cli {
-    /// The config file to use.
-    ///
-    /// This is required.
-    #[arg(short, long, required = true, env = "AOC_TOOLS_CONFIG")]
-    config: PathBuf,
-
     #[command(subcommand)]
     command: Commands,
 }
@@ -57,32 +42,19 @@ impl Cli {
     pub fn run() -> Result<()> {
         let cli = Self::parse();
 
-        // load the config since it's poetentially used everywhere
-        let config = Config::load(&cli.config)?;
-
-        cli.command.run(&config)
+        cli.command.run()
     }
 }
 
 #[derive(Debug, Clone, Subcommand)]
 pub enum Commands {
-    Bench(bench::Bench),
-    CheckSolutions(check_solutions::CheckSolutions),
-    CopyInputs(copy_inputs::CopyInputs),
-    Report(report::Report),
-    SolveInputs(solve_inputs::SolveInputs),
-    Summary(summary::Summary),
+    Ci(ci::Ci),
 }
 
 impl Commands {
-    pub fn run(&self, config: &Config) -> Result<()> {
+    pub fn run(&self) -> Result<()> {
         match self {
-            Self::Bench(cmd) => cmd.run(config),
-            Self::CheckSolutions(cmd) => cmd.run(config),
-            Self::CopyInputs(cmd) => cmd.run(config),
-            Self::Report(cmd) => cmd.run(config),
-            Self::SolveInputs(cmd) => cmd.run(config),
-            Self::Summary(cmd) => cmd.run(config),
+            Self::Ci(cmd) => cmd.run(),
         }
     }
 }
