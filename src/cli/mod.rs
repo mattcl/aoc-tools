@@ -1,7 +1,8 @@
-mod ci;
-
 use anyhow::Result;
 use clap::{Parser, Subcommand};
+
+mod ci;
+mod criterion_summary;
 
 #[macro_export]
 macro_rules! attention {
@@ -49,12 +50,14 @@ impl Cli {
 #[derive(Debug, Clone, Subcommand)]
 pub enum Commands {
     Ci(ci::Ci),
+    CriterionSummary(criterion_summary::CriterionSummary),
 }
 
 impl Commands {
     pub fn run(&self) -> Result<()> {
         match self {
             Self::Ci(cmd) => cmd.run(),
+            Self::CriterionSummary(cmd) => cmd.run(),
         }
     }
 }
