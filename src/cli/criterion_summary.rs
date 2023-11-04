@@ -1,9 +1,14 @@
-use std::{collections::BTreeMap, path::PathBuf};
+use std::{
+    collections::BTreeMap,
+    fs::File,
+    io::{BufWriter, Write},
+    path::PathBuf,
+};
 
 use anyhow::{anyhow, bail, Context, Result};
 use clap::Args;
 use comfy_table::{presets::ASCII_BORDERS_ONLY_CONDENSED, CellAlignment, Table};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use walkdir::WalkDir;
 
 /// Given a project conforming to the rust template, generate a benchmark summary.
@@ -13,6 +18,10 @@ use walkdir::WalkDir;
 pub struct CriterionSummary {
     /// The path to the criterion target
     criterion_path: PathBuf,
+
+    /// Output a json representation to the specified path
+    #[clap(short, long)]
+    output: Option<PathBuf>,
 }
 
 impl CriterionSummary {
@@ -74,26 +83,36 @@ impl CriterionSummary {
             total += per_iter;
         }
 
-        let mut table = Table::new();
-        table.load_preset(ASCII_BORDERS_ONLY_CONDENSED);
-        table.set_header(vec!["Problem", "Time (ms)", "% Total Time"]);
-
+        let mut rows = Vec::with_capacity(records.len() + 1);
         let mut percent_sum = 0.0;
         for (problem, per_iter) in records.iter() {
             let percent = per_iter / total * 100.0;
             percent_sum += percent;
+            rows.push(ReportRow {
+                label: problem,
+                time_ms: *per_iter,
+                percent_total_time: percent,
+            });
+        }
+
+        rows.push(ReportRow {
+            label: "Total",
+            time_ms: total,
+            percent_total_time: percent_sum,
+        });
+
+        let mut table = Table::new();
+        table.load_preset(ASCII_BORDERS_ONLY_CONDENSED);
+        table.set_header(vec!["Problem", "Time (ms)", "% Total Time"]);
+
+        for row in rows.iter() {
             table.add_row(vec![
-                problem,
-                &format!("{:.5}", per_iter),
-                &format!("{:.3}", percent),
+                row.label,
+                &format!("{:.5}", row.time_ms),
+                &format!("{:.3}", row.percent_total_time),
             ]);
         }
 
-        table.add_row(vec![
-            "Total",
-            &format!("{:.5}", total),
-            &format!("{:.3}", percent_sum),
-        ]);
         table
             .column_mut(1)
             .unwrap()
@@ -104,6 +123,14 @@ impl CriterionSummary {
             .set_cell_alignment(CellAlignment::Right);
 
         println!("{}", table);
+
+        if let Some(ref output) = self.output {
+            println!("  Writing json to '{}'", output.display());
+            let output = File::create(output).context("Failed to create output file")?;
+            let mut writer = BufWriter::new(output);
+            serde_json::to_writer(&mut writer, &rows).context("Failed to write output")?;
+            writer.flush()?;
+        }
 
         Ok(())
     }
@@ -119,4 +146,11 @@ impl Record {
     pub fn per_iter_ms(&self) -> f64 {
         self.sample_measured_value / self.iteration_count as f64 / 1_000_000.0
     }
+}
+
+#[derive(Debug, Default, Clone, Copy, Serialize)]
+struct ReportRow<'a> {
+    label: &'a str,
+    time_ms: f64,
+    percent_total_time: f64,
 }
