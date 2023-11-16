@@ -43,7 +43,7 @@ impl Bench {
         println!("> Day: {} benchmarking", self.day);
 
         let day_directory_name = day_directory_name(self.day);
-        let day_directory = self.inputs.join(&day_directory_name);
+        let day_directory = self.inputs.join(day_directory_name);
 
         if !day_directory.is_dir() {
             println!("> No inputs for day {}", self.day);
