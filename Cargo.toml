@@ -1,6 +1,6 @@
 [package]
 name = "aoc-tools"
-version = "2.3.0"
+version = "2.4.0"
 edition = "2021"
 authors = ["Matt Chun-Lum <matt@questionable.engineering>"]
 description = "A collection of tools for an Advent of Code CI pipeline."

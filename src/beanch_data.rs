@@ -22,6 +22,7 @@ impl OriginalCSVRow {
 
 #[derive(Debug, Default, Clone, Serialize)]
 pub struct TransformedCSVRow {
+    day: usize,
     participant: String,
     input: String,
     language: String,
@@ -35,8 +36,14 @@ pub struct TransformedCSVRow {
 }
 
 impl TransformedCSVRow {
-    pub fn from_original(original: OriginalCSVRow, participant: String, language: String) -> Self {
+    pub fn from_original(
+        original: OriginalCSVRow,
+        day: usize,
+        participant: String,
+        language: String,
+    ) -> Self {
         Self {
+            day,
             participant,
             input: original.parameter_input,
             language,

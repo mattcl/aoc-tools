@@ -188,7 +188,8 @@ impl Bench {
 
         // We want to do something similar for the raw csv
         let bench_csv = day_directory.join("benches_raw.csv");
-        transform_bench_csv(bench_csv, &candidates).context("Could not transform bench csv")?;
+        transform_bench_csv(bench_csv, self.day, &candidates)
+            .context("Could not transform bench csv")?;
 
         Ok(())
     }
@@ -196,6 +197,7 @@ impl Bench {
 
 fn transform_bench_csv<P: AsRef<Path>>(
     path: P,
+    day: usize,
     candidates: &[(&String, &AocProject)],
 ) -> Result<()> {
     let path = path.as_ref();
@@ -225,6 +227,7 @@ fn transform_bench_csv<P: AsRef<Path>>(
         if let Some((name, language)) = lookup_map.get(&entrypoint.as_str()) {
             transformed.push(TransformedCSVRow::from_original(
                 record,
+                day,
                 name.to_string(),
                 language.to_string(),
             ));
