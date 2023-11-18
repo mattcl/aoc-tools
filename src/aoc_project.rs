@@ -33,6 +33,10 @@ impl AocProject {
         &self.username
     }
 
+    pub fn language(&self) -> &str {
+        &self.language
+    }
+
     pub fn entrypoint(&self) -> &str {
         &self.entrypoint
     }

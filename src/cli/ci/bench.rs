@@ -1,7 +1,8 @@
 use std::{
+    collections::HashMap,
     fs::File,
     io::{BufWriter, Write},
-    path::PathBuf,
+    path::{Path, PathBuf},
     process::Command,
 };
 
@@ -10,7 +11,16 @@ use clap::Args;
 use itertools::Itertools;
 use which::which;
 
-use crate::{config::Config, highlight, solution::Solutions, success, util::day_directory_name};
+use crate::{
+    aoc_project::AocProject,
+    attention,
+    beanch_data::{OriginalCSVRow, TransformedCSVRow},
+    config::Config,
+    highlight,
+    solution::Solutions,
+    success,
+    util::day_directory_name,
+};
 
 /// Run comparative benchmarks for a given day between the config participants.
 ///
@@ -166,7 +176,7 @@ impl Bench {
         // separate column.
         for (name, project) in candidates.iter() {
             for input_name in inputs_raw.iter() {
-                let needle = format!("`AOC_INPUT={} {}`", input_name, project.entrypoint());
+                let needle = format!("`AOC_INPUT={} {}`", input_name, project.bench_entrypoint());
                 let replacement = format!("{} | {}", name, input_name);
                 bench_contents = bench_contents.replacen(&needle, &replacement, 1);
             }
@@ -176,6 +186,60 @@ impl Bench {
         let mut bench_out = File::create(day_directory.join("benches.md"))?;
         bench_out.write_all(bench_contents.as_bytes())?;
 
+        // We want to do something similar for the raw csv
+        let bench_csv = day_directory.join("benches_raw.csv");
+        transform_bench_csv(bench_csv, &candidates).context("Could not transform bench csv")?;
+
         Ok(())
     }
+}
+
+fn transform_bench_csv<P: AsRef<Path>>(
+    path: P,
+    candidates: &[(&String, &AocProject)],
+) -> Result<()> {
+    let path = path.as_ref();
+    let raw_bench_data: Vec<OriginalCSVRow> = {
+        let mut out = Vec::default();
+        let mut reader = csv::Reader::from_path(path)?;
+        for result in reader.deserialize() {
+            out.push(result?);
+        }
+        out
+    };
+
+    let lookup_map: HashMap<&str, (&str, &str)> = candidates
+        .iter()
+        .map(|(name, project)| {
+            (
+                project.bench_entrypoint(),
+                (name.as_str(), project.language()),
+            )
+        })
+        .collect();
+
+    let mut transformed = Vec::with_capacity(raw_bench_data.len());
+
+    for record in raw_bench_data {
+        let entrypoint = record.get_raw_command();
+        if let Some((name, language)) = lookup_map.get(&entrypoint.as_str()) {
+            transformed.push(TransformedCSVRow::from_original(
+                record,
+                name.to_string(),
+                language.to_string(),
+            ));
+        } else {
+            println!(
+                "  {}",
+                attention!(format!("Could not transform record for `{}`", &entrypoint))
+            );
+        }
+    }
+
+    let mut writer = csv::Writer::from_path(path)?;
+    for record in transformed {
+        writer.serialize(record)?;
+    }
+    writer.flush()?;
+    Ok(())
 }
