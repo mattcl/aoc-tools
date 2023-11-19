@@ -5,11 +5,12 @@ use clap::Args;
 use plotly::{
     color::Rgb,
     layout::{Axis, BarMode},
-    Bar, Layout, Plot,
+    Bar, ImageFormat, Layout, Plot,
 };
 
 use crate::bench_data::{load_benches, BenchCSVRow};
 
+/// Generate graph(s) using a combined benches CSV.
 #[derive(Debug, Clone, Args)]
 pub struct Graph {
     /// The path to a combined benches CSV
@@ -18,6 +19,10 @@ pub struct Graph {
     /// If set, stores a HTML representation of the graphs.
     #[clap(long)]
     output_html: Option<PathBuf>,
+
+    /// If set, stores a PNG representation of the graphs.
+    #[clap(long)]
+    output_png: Option<PathBuf>,
 }
 
 impl Graph {
@@ -39,6 +44,11 @@ impl Graph {
             std::fs::write(output_html, accumulated.to_html())?;
         }
 
+        if let Some(ref output_png) = self.output_png {
+            println!("> saving PNG");
+            accumulated.write_image(output_png, ImageFormat::PNG, 1200, 1000, 1.0);
+        }
+
         Ok(())
     }
 }
@@ -48,8 +58,8 @@ fn accumulated_graph(benches: &[BenchCSVRow]) -> Plot {
 
     let layout = Layout::new()
         .bar_mode(BarMode::Stack)
-        .title("Total Runtime".into())
-        .height(900)
+        .title("Total runtime by day (lower is better)".into())
+        .height(1000)
         .colorway(default_colorway())
         .y_axis(Axis::new().title("Time (ms)".into()));
     plot.set_layout(layout);
