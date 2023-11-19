@@ -102,6 +102,7 @@ dependencies = [
  "itertools",
  "minijinja",
  "plotly",
+ "plotly_kaleido",
  "serde",
  "serde_json",
  "serde_yaml",
@@ -1057,8 +1058,7 @@ dependencies = [
 [[package]]
 name = "plotly_kaleido"
 version = "0.8.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "40b8d0cd0d7884dbfe9d986d5c2e372dec74db6ffe825666f72fd91017ff685c"
+source = "git+https://github.com/mattcl/plotly?branch=avoid-ruget#7176ba4dd129f5acbe523dfc3698e0dec542e653"
 dependencies = [
  "base64",
  "directories",
