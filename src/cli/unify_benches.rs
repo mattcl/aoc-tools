@@ -1,9 +1,14 @@
 use std::path::PathBuf;
 
-use anyhow::{bail, Context, Result};
+use anyhow::{bail, Result};
 use clap::Args;
 
-use crate::{attention, beanch_data::BenchCSVRow, highlight, util::day_directory_name};
+use crate::{
+    attention,
+    bench_data::{load_benches, BenchCSVRow},
+    highlight,
+    util::day_directory_name,
+};
 
 /// Combine the `benches_raw.csv` files for every day into a single CSV file.
 #[derive(Debug, Clone, Args)]
@@ -40,11 +45,7 @@ impl UnifyBenches {
                 println!("> Reading data for day {day}");
             }
 
-            let mut reader = csv::Reader::from_path(raw_csv).context("Failed to parse csv")?;
-
-            for result in reader.deserialize() {
-                unified.push(result?);
-            }
+            load_benches(raw_csv, &mut unified)?;
 
             println!();
         }

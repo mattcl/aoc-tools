@@ -1,3 +1,6 @@
+use std::path::Path;
+
+use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Default, Clone, Deserialize)]
@@ -22,17 +25,17 @@ impl OriginalCSVRow {
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct BenchCSVRow {
-    day: usize,
-    participant: String,
-    input: String,
-    language: String,
-    mean: f64,
-    stddev: f64,
-    median: f64,
-    user: f64,
-    system: f64,
-    min: f64,
-    max: f64,
+    pub day: usize,
+    pub participant: String,
+    pub input: String,
+    pub language: String,
+    pub mean: f64,
+    pub stddev: f64,
+    pub median: f64,
+    pub user: f64,
+    pub system: f64,
+    pub min: f64,
+    pub max: f64,
 }
 
 impl BenchCSVRow {
@@ -56,4 +59,14 @@ impl BenchCSVRow {
             max: original.max,
         }
     }
+}
+
+pub fn load_benches<P: AsRef<Path>>(path: P, out: &mut Vec<BenchCSVRow>) -> Result<()> {
+    let mut reader = csv::Reader::from_path(path).context("Failed to parse csv")?;
+
+    for result in reader.deserialize() {
+        out.push(result?);
+    }
+
+    Ok(())
 }

@@ -1,6 +1,6 @@
 [package]
 name = "aoc-tools"
-version = "2.5.0"
+version = "2.6.0"
 edition = "2021"
 authors = ["Matt Chun-Lum <matt@questionable.engineering>"]
 description = "A collection of tools for an Advent of Code CI pipeline."
@@ -20,6 +20,7 @@ dirs = "5.0.1"
 figment = { version = "0.10.10", features = ["env", "toml"] }
 itertools = "0.11.0"
 minijinja = "1.0.9"
+plotly = "0.8.4"
 serde = { version = "1.0.145", features = ["derive"] }
 serde_json = "1.0.55"
 serde_yaml = "0.9.22"

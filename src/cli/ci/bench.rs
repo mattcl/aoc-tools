@@ -14,7 +14,7 @@ use which::which;
 use crate::{
     aoc_project::AocProject,
     attention,
-    beanch_data::{BenchCSVRow, OriginalCSVRow},
+    bench_data::{BenchCSVRow, OriginalCSVRow},
     config::Config,
     highlight,
     solution::Solutions,

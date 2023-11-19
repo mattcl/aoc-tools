@@ -3,6 +3,7 @@ use clap::{Parser, Subcommand};
 
 mod ci;
 mod criterion_summary;
+mod graph;
 mod unify_benches;
 
 #[macro_export]
@@ -52,6 +53,7 @@ impl Cli {
 pub enum Commands {
     Ci(ci::Ci),
     CriterionSummary(criterion_summary::CriterionSummary),
+    Graph(graph::Graph),
     UnifyBenches(unify_benches::UnifyBenches),
 }
 
@@ -60,6 +62,7 @@ impl Commands {
         match self {
             Self::Ci(cmd) => cmd.run(),
             Self::CriterionSummary(cmd) => cmd.run(),
+            Self::Graph(cmd) => cmd.run(),
             Self::UnifyBenches(cmd) => cmd.run(),
         }
     }
