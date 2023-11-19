@@ -20,8 +20,8 @@ impl OriginalCSVRow {
     }
 }
 
-#[derive(Debug, Default, Clone, Serialize)]
-pub struct TransformedCSVRow {
+#[derive(Debug, Default, Clone, Serialize, Deserialize)]
+pub struct BenchCSVRow {
     day: usize,
     participant: String,
     input: String,
@@ -35,7 +35,7 @@ pub struct TransformedCSVRow {
     max: f64,
 }
 
-impl TransformedCSVRow {
+impl BenchCSVRow {
     pub fn from_original(
         original: OriginalCSVRow,
         day: usize,

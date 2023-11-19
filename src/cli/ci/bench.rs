@@ -14,7 +14,7 @@ use which::which;
 use crate::{
     aoc_project::AocProject,
     attention,
-    beanch_data::{OriginalCSVRow, TransformedCSVRow},
+    beanch_data::{BenchCSVRow, OriginalCSVRow},
     config::Config,
     highlight,
     solution::Solutions,
@@ -225,7 +225,7 @@ fn transform_bench_csv<P: AsRef<Path>>(
     for record in raw_bench_data {
         let entrypoint = record.get_raw_command();
         if let Some((name, language)) = lookup_map.get(&entrypoint.as_str()) {
-            transformed.push(TransformedCSVRow::from_original(
+            transformed.push(BenchCSVRow::from_original(
                 record,
                 day,
                 name.to_string(),
