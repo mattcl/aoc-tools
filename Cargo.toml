@@ -1,6 +1,6 @@
 [package]
 name = "aoc-tools"
-version = "2.6.1"
+version = "2.7.0"
 edition = "2021"
 authors = ["Matt Chun-Lum <matt@questionable.engineering>"]
 description = "A collection of tools for an Advent of Code CI pipeline."
@@ -20,8 +20,8 @@ dirs = "5.0.1"
 figment = { version = "0.10.10", features = ["env", "toml"] }
 itertools = "0.11.0"
 minijinja = "1.0.9"
-plotly_kaleido = "0.8.4"
-plotly = { version = "0.8.4", features = ["kaleido"] }
+plotly_kaleido = { version = "0.8.4", optional = true }
+plotly = "0.8.4"
 serde = { version = "1.0.145", features = ["derive"] }
 serde_json = "1.0.73"
 serde_yaml = "0.9.22"
@@ -33,6 +33,10 @@ which = "5.0.0"
 [dev-dependencies]
 assert_cmd = "2.0.12"
 assert_fs = "1.0.13"
+
+[features]
+default = []
+image_export = ["dep:plotly_kaleido", "plotly/kaleido"]
 
 # ruget has no rustls passthrough
 [patch.crates-io]

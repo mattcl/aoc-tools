@@ -2,10 +2,12 @@ use std::{collections::BTreeMap, f64::EPSILON, path::PathBuf};
 
 use anyhow::{bail, Result};
 use clap::Args;
+#[cfg(feature = "image_export")]
+use plotly::ImageFormat;
 use plotly::{
     color::Rgb,
     layout::{Axis, BarMode},
-    Bar, ImageFormat, Layout, Plot,
+    Bar, Layout, Plot,
 };
 
 use crate::bench_data::{load_benches, BenchCSVRow};
@@ -20,6 +22,7 @@ pub struct Graph {
     #[clap(long)]
     output_html: Option<PathBuf>,
 
+    #[cfg(feature = "image_export")]
     /// If set, stores a PNG representation of the graphs.
     #[clap(long)]
     output_png: Option<PathBuf>,
@@ -44,6 +47,7 @@ impl Graph {
             std::fs::write(output_html, accumulated.to_html())?;
         }
 
+        #[cfg(feature = "image_export")]
         if let Some(ref output_png) = self.output_png {
             println!("> saving PNG");
             accumulated.write_image(output_png, ImageFormat::PNG, 1200, 1000, 1.0);
