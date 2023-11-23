@@ -22,6 +22,10 @@ pub struct Graph {
     #[clap(long)]
     output_html: Option<PathBuf>,
 
+    /// If set, stores a JSON representation of the graphs.
+    #[clap(long)]
+    output_json: Option<PathBuf>,
+
     #[cfg(feature = "image_export")]
     /// If set, stores a PNG representation of the graphs.
     #[clap(long)]
@@ -45,6 +49,11 @@ impl Graph {
         if let Some(ref output_html) = self.output_html {
             println!("> saving html");
             std::fs::write(output_html, accumulated.to_html())?;
+        }
+
+        if let Some(ref output_json) = self.output_json {
+            println!("> saving JSON");
+            std::fs::write(output_json, accumulated.to_json())?;
         }
 
         #[cfg(feature = "image_export")]
