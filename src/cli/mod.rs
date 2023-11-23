@@ -4,6 +4,7 @@ use clap::{Parser, Subcommand};
 mod ci;
 mod criterion_summary;
 mod graph;
+mod publish_benches;
 mod unify_benches;
 
 #[macro_export]
@@ -54,6 +55,7 @@ pub enum Commands {
     Ci(ci::Ci),
     CriterionSummary(criterion_summary::CriterionSummary),
     Graph(graph::Graph),
+    PublishBenches(publish_benches::PublishBenches),
     UnifyBenches(unify_benches::UnifyBenches),
 }
 
@@ -63,6 +65,7 @@ impl Commands {
             Self::Ci(cmd) => cmd.run(),
             Self::CriterionSummary(cmd) => cmd.run(),
             Self::Graph(cmd) => cmd.run(),
+            Self::PublishBenches(cmd) => cmd.run(),
             Self::UnifyBenches(cmd) => cmd.run(),
         }
     }

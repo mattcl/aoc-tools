@@ -34,6 +34,9 @@ use crate::{
 /// for which there is a solution will be used.
 #[derive(Debug, Clone, Args)]
 pub struct Bench {
+    /// The year.
+    year: usize,
+
     /// The day.
     day: usize,
 
@@ -188,7 +191,7 @@ impl Bench {
 
         // We want to do something similar for the raw csv
         let bench_csv = day_directory.join("benches_raw.csv");
-        transform_bench_csv(bench_csv, self.day, &candidates)
+        transform_bench_csv(bench_csv, self.year, self.day, &candidates)
             .context("Could not transform bench csv")?;
 
         Ok(())
@@ -197,6 +200,7 @@ impl Bench {
 
 fn transform_bench_csv<P: AsRef<Path>>(
     path: P,
+    year: usize,
     day: usize,
     candidates: &[(&String, &AocProject)],
 ) -> Result<()> {
@@ -227,6 +231,7 @@ fn transform_bench_csv<P: AsRef<Path>>(
         if let Some((name, language)) = lookup_map.get(&entrypoint.as_str()) {
             transformed.push(BenchCSVRow::from_original(
                 record,
+                year,
                 day,
                 name.to_string(),
                 language.to_string(),

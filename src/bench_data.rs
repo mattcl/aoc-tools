@@ -25,6 +25,7 @@ impl OriginalCSVRow {
 
 #[derive(Debug, Default, Clone, Serialize, Deserialize)]
 pub struct BenchCSVRow {
+    pub year: usize,
     pub day: usize,
     pub participant: String,
     pub input: String,
@@ -41,11 +42,13 @@ pub struct BenchCSVRow {
 impl BenchCSVRow {
     pub fn from_original(
         original: OriginalCSVRow,
+        year: usize,
         day: usize,
         participant: String,
         language: String,
     ) -> Self {
         Self {
+            year,
             day,
             participant,
             input: original.parameter_input,
