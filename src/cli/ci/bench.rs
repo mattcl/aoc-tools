@@ -112,12 +112,12 @@ impl Bench {
         cmd.env("AOC_DAY", self.day.to_string());
         cmd.env("AOC_CI", "true");
         cmd.args([
-            // warmup 3 times
+            // warmup 2 times
             "-w",
-            "3",
-            // at least 10 runs
+            "2",
+            // at least 3 runs
             "-m",
-            "10",
+            "3",
             // at most 100 runs
             "-M",
             "200",
