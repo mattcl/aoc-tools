@@ -1,11 +1,13 @@
 use anyhow::Result;
-use clap::{Parser, Subcommand};
+use clap::{Args, Parser, Subcommand};
+use url::Url;
 
 mod ci;
 mod criterion_summary;
 mod graph;
 mod publish_benches;
 mod unify_benches;
+mod update_participants;
 
 #[macro_export]
 macro_rules! attention {
@@ -57,6 +59,7 @@ pub enum Commands {
     Graph(graph::Graph),
     PublishBenches(publish_benches::PublishBenches),
     UnifyBenches(unify_benches::UnifyBenches),
+    UpdateParticipants(update_participants::UpdateParticipants),
 }
 
 impl Commands {
@@ -67,6 +70,24 @@ impl Commands {
             Self::Graph(cmd) => cmd.run(),
             Self::PublishBenches(cmd) => cmd.run(),
             Self::UnifyBenches(cmd) => cmd.run(),
+            Self::UpdateParticipants(cmd) => cmd.run(),
         }
     }
+}
+
+#[derive(Debug, Clone, Args)]
+pub struct ApiCommon {
+    /// The base api url for an aoc-web service.
+    #[clap(short, long, required = true, env = "AOC_TOOLS_API_BASE")]
+    pub api_base: Url,
+
+    /// The token for authenticating with the api.
+    #[clap(
+        short,
+        long,
+        required = true,
+        env = "AOC_TOOLS_API_TOKEN",
+        hide_env_values = true
+    )]
+    pub api_token: String,
 }

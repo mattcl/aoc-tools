@@ -33,6 +33,10 @@ impl AocProject {
         &self.username
     }
 
+    pub fn repo(&self) -> &Url {
+        &self.repo
+    }
+
     pub fn language(&self) -> &str {
         &self.language
     }

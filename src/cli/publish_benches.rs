@@ -3,9 +3,10 @@ use std::path::PathBuf;
 use anyhow::{bail, Context, Result};
 use clap::Args;
 use reqwest::header::CONTENT_TYPE;
-use url::Url;
 
 use crate::bench_data::BenchCSVRow;
+
+use super::ApiCommon;
 
 /// Publish a unified benches CSV to an aoc-web service, regenerating summaries
 /// afterward.
@@ -17,19 +18,8 @@ pub struct PublishBenches {
     /// The path to a unified benches CSV.
     benches: PathBuf,
 
-    /// The base api url for an aoc-web service.
-    #[clap(short, long, required = true, env = "AOC_TOOLS_API_BASE")]
-    api_base: Url,
-
-    /// The token for authenticating with the api.
-    #[clap(
-        short,
-        long,
-        required = true,
-        env = "AOC_TOOLS_API_TOKEN",
-        hide_env_values = true
-    )]
-    api_token: String,
+    #[clap(flatten)]
+    api: ApiCommon,
 }
 
 impl PublishBenches {
@@ -53,8 +43,8 @@ impl PublishBenches {
 
         let client = reqwest::blocking::Client::new();
 
-        let publish_endpoint = self.api_base.join("v1/benchmarks")?;
-        let generate_endpoint = self.api_base.join("v1/summaries/generate")?;
+        let publish_endpoint = self.api.api_base.join("v1/benchmarks")?;
+        let generate_endpoint = self.api.api_base.join("v1/summaries/generate")?;
 
         println!(
             "> Publishing {} benches to {}",
@@ -65,7 +55,7 @@ impl PublishBenches {
         // first publish the benchmarks
         let res = client
             .post(publish_endpoint)
-            .bearer_auth(&self.api_token)
+            .bearer_auth(&self.api.api_token)
             .header(CONTENT_TYPE, "application/json")
             .json(&benches)
             .send()
@@ -83,7 +73,7 @@ impl PublishBenches {
 
         let res = client
             .post(generate_endpoint)
-            .bearer_auth(&self.api_token)
+            .bearer_auth(&self.api.api_token)
             .header(CONTENT_TYPE, "application/json")
             .json(&year)
             .send()
