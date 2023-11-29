@@ -1,4 +1,7 @@
-use std::path::{Path, PathBuf};
+use std::{
+    fs::File,
+    path::{Path, PathBuf},
+};
 
 use anyhow::{Context, Result};
 use clap::Args;
@@ -82,6 +85,14 @@ impl CopyInputs {
                     "  '{}' does not exist or is not a file",
                     from.to_string_lossy()
                 ))
+            );
+            return Ok(());
+        }
+
+        if std::fs::read_to_string(from)?.lines().count() < 1 {
+            println!(
+                "  {}",
+                highlight!(format!("Skipping empty file {}", from.display()))
             );
             return Ok(());
         }
