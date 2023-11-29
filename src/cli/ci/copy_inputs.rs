@@ -44,11 +44,12 @@ impl CopyInputs {
                     Ok(Some(path)) => {
                         let output_name = format!("input-{}", project.username());
                         let dest = day_directory.join(output_name);
-                        self.copy_input(&path, &dest)?;
-                        println!(
-                            "{}",
-                            success!(format!("  Copied input from {}", project.username()))
-                        )
+                        if self.copy_input(&path, &dest)? {
+                            println!(
+                                "{}",
+                                success!(format!("  Copied input from {}", project.username()))
+                            )
+                        }
                     }
                     Ok(None) => {
                         println!(
@@ -74,7 +75,7 @@ impl CopyInputs {
         Ok(())
     }
 
-    fn copy_input(&self, from: &Path, to: &Path) -> Result<()> {
+    fn copy_input(&self, from: &Path, to: &Path) -> Result<bool> {
         if !from.is_file() {
             println!(
                 "{}",
@@ -83,7 +84,7 @@ impl CopyInputs {
                     from.to_string_lossy()
                 ))
             );
-            return Ok(());
+            return Ok(false);
         }
 
         if std::fs::read_to_string(from)?.lines().count() < 1 {
@@ -91,11 +92,11 @@ impl CopyInputs {
                 "  {}",
                 highlight!(format!("Skipping empty file {}", from.display()))
             );
-            return Ok(());
+            return Ok(false);
         }
 
         std::fs::copy(from, to)?;
 
-        Ok(())
+        Ok(true)
     }
 }
