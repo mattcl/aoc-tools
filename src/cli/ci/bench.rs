@@ -31,7 +31,8 @@ use crate::{
 ///
 /// This assumes that the configured projects have all passed the
 /// check-solutions command for the available inputs, implying that only inputs
-/// for which there is a solution will be used.
+/// for which there is a solution will be used. A project will not be benched on
+/// a given day if its runtime exceeds the configured timeout.
 #[derive(Debug, Clone, Args)]
 pub struct Bench {
     /// The year.
@@ -91,10 +92,18 @@ impl Bench {
             )
             .canonicalize()?;
 
+        // we attempt to solve all the participants' solutions for the given day
+        // and the canary file, further requiring that they complete in under
+        // the specified timeout
         let mut candidates: Vec<_> = config
             .participants()
             .iter()
-            .filter(|(_, p)| matches!(p.solve(self.day, &canary), Ok(Some(_))))
+            .filter(|(_, p)| {
+                matches!(
+                    p.solve(self.day, &canary, Some(config.timeout())),
+                    Ok(Some(_))
+                )
+            })
             .collect();
 
         candidates.sort_by(|a, b| a.0.cmp(b.0));

@@ -20,6 +20,8 @@ use crate::{
 ///
 /// This will create a solutions.json file for each day's worth of inputs, and
 /// assumes the specified inputs path to have paths like day_001, day_002, etc.
+///
+/// For any given solution, this will time out after the configured timeout.
 #[derive(Debug, Clone, Args)]
 pub struct SolveInputs {
     /// The root directory where inputs are stored.
@@ -70,9 +72,12 @@ impl SolveInputs {
                 }
 
                 let input = entry.path().canonicalize()?;
-                if let Some(solution) = solver.solve(day, &input).with_context(|| {
-                    format!("Failed to solve day {} for input {}", day, filename)
-                })? {
+                if let Some(solution) = solver
+                    .solve(day, &input, Some(config.timeout()))
+                    .with_context(|| {
+                        format!("Failed to solve day {} for input {}", day, filename)
+                    })?
+                {
                     solutions.insert(filename.to_string(), solution);
                 } else {
                     println!(

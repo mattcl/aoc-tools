@@ -15,6 +15,8 @@ use crate::{
 ///
 /// This runs with the official and challenge inputs (if available). Failing to
 /// solve challenge inputs does not count as an overall failure when checking.
+///
+/// This will timeout the checking after the specified timeout in the config.
 #[derive(Debug, Clone, Args)]
 pub struct CheckSolutions {
     /// The particpatnt's solutions to check.
@@ -85,7 +87,7 @@ impl CheckSolutions {
                 }
 
                 if let Some(computed) = project
-                    .solve(day, &input_file)
+                    .solve(day, &input_file, Some(config.timeout()))
                     .context("Failed to produce solution")?
                 {
                     if !self.check_solution(day, input_name, solution, &computed) {
@@ -119,7 +121,7 @@ impl CheckSolutions {
                     continue;
                 }
 
-                match project.solve(day, &input_file) {
+                match project.solve(day, &input_file, Some(config.timeout())) {
                     Ok(Some(computed)) => {
                         self.check_solution(day, input_name, solution, &computed);
                     }

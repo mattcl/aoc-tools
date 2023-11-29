@@ -128,9 +128,14 @@ impl AocProject {
         Ok(self.location.join(path))
     }
 
-    pub fn solve(&self, day: usize, input: &Path) -> Result<Option<Solution>> {
+    pub fn solve(
+        &self,
+        day: usize,
+        input: &Path,
+        timeout: Option<usize>,
+    ) -> Result<Option<Solution>> {
         let output = self
-            .solver_command(day, input)?
+            .solver_command(day, input, timeout)?
             .output()
             .context("Failed to execute command")?;
 
@@ -154,7 +159,12 @@ impl AocProject {
 
     /// Get a command to produce the solution for a given day and absolute path
     /// to an input.
-    pub fn solver_command(&self, day: usize, input: &Path) -> Result<Command> {
+    pub fn solver_command(
+        &self,
+        day: usize,
+        input: &Path,
+        timeout: Option<usize>,
+    ) -> Result<Command> {
         if input.is_relative() {
             bail!("Inputs provided to the solver must be absolute");
         }
@@ -165,20 +175,31 @@ impl AocProject {
                 self.username()
             )
         })?;
-        let (prog, args) = parts
-            .split_first()
-            .ok_or_else(|| anyhow!("Could not extract program"))?;
 
-        let mut cmd = Command::new(prog);
+        let mut cmd = if let Some(time) = timeout {
+            let mut cmd = Command::new("timeout");
+            cmd.args(["-v", &time.to_string()]);
+            cmd.args(parts);
+
+            cmd
+        } else {
+            let (prog, args) = parts
+                .split_first()
+                .ok_or_else(|| anyhow!("Could not extract program"))?;
+
+            let mut cmd = Command::new(prog);
+
+            if !args.is_empty() {
+                cmd.args(args);
+            }
+
+            cmd
+        };
 
         cmd.env("AOC_DAY", day.to_string());
         cmd.env("AOC_INPUT", input.to_string_lossy().to_string());
         cmd.env("AOC_JSON", "true");
         cmd.env("AOC_CI", "true");
-
-        if !args.is_empty() {
-            cmd.args(args);
-        }
 
         Ok(cmd)
     }

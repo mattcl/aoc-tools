@@ -10,6 +10,10 @@ use url::Url;
 
 use crate::aoc_project::AocProject;
 
+fn default_timeout() -> usize {
+    30
+}
+
 #[derive(Debug, Clone, Eq, PartialEq, Deserialize)]
 pub struct Config {
     general: General,
@@ -20,6 +24,8 @@ pub struct Config {
 pub struct General {
     year: usize,
     pipeline_url: Url,
+    #[serde(default = "default_timeout")]
+    timeout: usize,
 }
 
 impl Config {
@@ -40,5 +46,9 @@ impl Config {
 
     pub fn pipeline_url(&self) -> &Url {
         &self.general.pipeline_url
+    }
+
+    pub fn timeout(&self) -> usize {
+        self.general.timeout
     }
 }
