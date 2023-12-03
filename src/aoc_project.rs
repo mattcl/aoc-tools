@@ -143,6 +143,12 @@ impl AocProject {
             bail!("Failed to solve: {:?}", output);
         }
 
+        let out = String::from_utf8_lossy(&output.stdout);
+
+        if out.trim() == "not implemented" {
+            return Ok(None);
+        }
+
         let raw_solution: Value = serde_json::from_slice(&output.stdout)?;
 
         if let Value::String(ref msg) = raw_solution {

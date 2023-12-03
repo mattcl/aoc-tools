@@ -2,6 +2,7 @@ use anyhow::Result;
 use clap::{Args, Parser, Subcommand};
 use url::Url;
 
+mod check_config;
 mod ci;
 mod criterion_summary;
 mod graph;
@@ -54,6 +55,7 @@ impl Cli {
 
 #[derive(Debug, Clone, Subcommand)]
 pub enum Commands {
+    CheckConfig(check_config::CheckConfig),
     Ci(ci::Ci),
     CriterionSummary(criterion_summary::CriterionSummary),
     Graph(graph::Graph),
@@ -65,6 +67,7 @@ pub enum Commands {
 impl Commands {
     pub fn run(&self) -> Result<()> {
         match self {
+            Self::CheckConfig(cmd) => cmd.run(),
             Self::Ci(cmd) => cmd.run(),
             Self::CriterionSummary(cmd) => cmd.run(),
             Self::Graph(cmd) => cmd.run(),
