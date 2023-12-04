@@ -42,6 +42,8 @@ impl CheckSolutions {
             .get(&self.participant)
             .ok_or_else(|| anyhow!("Particpant does not exist: {}", &self.participant))?;
 
+        let year = config.year();
+
         'days: for day in 1..=25 {
             println!();
             let day_directory_name = day_directory_name(day);
@@ -87,7 +89,7 @@ impl CheckSolutions {
                 }
 
                 if let Some(computed) = project
-                    .solve(day, &input_file, Some(config.timeout()))
+                    .solve(year, day, &input_file, Some(config.timeout()))
                     .context("Failed to produce solution")?
                 {
                     if !self.check_solution(day, input_name, solution, &computed) {
@@ -121,7 +123,7 @@ impl CheckSolutions {
                     continue;
                 }
 
-                match project.solve(day, &input_file, Some(config.timeout())) {
+                match project.solve(year, day, &input_file, Some(config.timeout())) {
                     Ok(Some(computed)) => {
                         self.check_solution(day, input_name, solution, &computed);
                     }

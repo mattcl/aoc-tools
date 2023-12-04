@@ -59,9 +59,9 @@ impl AocProject {
         self.skip_inputs
     }
 
-    pub fn input_path(&self, day: usize) -> Result<Option<PathBuf>> {
+    pub fn input_path(&self, year: usize, day: usize) -> Result<Option<PathBuf>> {
         let output = self
-            .input_command(day)?
+            .input_command(year, day)?
             .output()
             .context("Failed to execute command")?;
 
@@ -89,7 +89,7 @@ impl AocProject {
     /// Construct a [Command] to get the path to the input for a given day.
     ///
     /// This command is set up with the `current_dir` as the project's location.
-    pub fn input_command(&self, day: usize) -> Result<Command> {
+    pub fn input_command(&self, year: usize, day: usize) -> Result<Command> {
         let parts = shell_words::split(&self.input_cmd).with_context(|| {
             format!(
                 "Failed to parse input command for project: {}",
@@ -105,6 +105,7 @@ impl AocProject {
 
         let mut cmd = Command::new(prog);
 
+        cmd.env("AOC_YEAR", year.to_string());
         cmd.env("AOC_DAY", day.to_string());
         cmd.env("AOC_CI", "true");
         cmd.current_dir(&self.location);
@@ -130,12 +131,13 @@ impl AocProject {
 
     pub fn solve(
         &self,
+        year: usize,
         day: usize,
         input: &Path,
         timeout: Option<usize>,
     ) -> Result<Option<Solution>> {
         let output = self
-            .solver_command(day, input, timeout)?
+            .solver_command(year, day, input, timeout)?
             .output()
             .context("Failed to execute command")?;
 
@@ -167,6 +169,7 @@ impl AocProject {
     /// to an input.
     pub fn solver_command(
         &self,
+        year: usize,
         day: usize,
         input: &Path,
         timeout: Option<usize>,
@@ -202,6 +205,7 @@ impl AocProject {
             cmd
         };
 
+        cmd.env("AOC_YEAR", year.to_string());
         cmd.env("AOC_DAY", day.to_string());
         cmd.env("AOC_INPUT", input.to_string_lossy().to_string());
         cmd.env("AOC_JSON", "true");

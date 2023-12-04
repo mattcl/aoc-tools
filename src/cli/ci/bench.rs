@@ -100,7 +100,7 @@ impl Bench {
             .iter()
             .filter(|(_, p)| {
                 matches!(
-                    p.solve(self.day, &canary, Some(config.timeout())),
+                    p.solve(self.year, self.day, &canary, Some(config.timeout())),
                     Ok(Some(_))
                 )
             })
@@ -118,6 +118,7 @@ impl Bench {
 
         let mut cmd = Command::new("hyperfine");
         cmd.current_dir(&day_directory);
+        cmd.env("AOC_YEAR", self.year.to_string());
         cmd.env("AOC_DAY", self.day.to_string());
         cmd.env("AOC_CI", "true");
         cmd.args([

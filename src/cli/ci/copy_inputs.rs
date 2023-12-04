@@ -22,6 +22,8 @@ pub struct CopyInputs {
 
 impl CopyInputs {
     pub fn run(&self, config: &Config) -> Result<()> {
+        let year = config.year();
+
         for day in 1..=25 {
             println!();
             let day_directory_name = day_directory_name(day);
@@ -40,7 +42,7 @@ impl CopyInputs {
                 .iter()
                 .filter(|(_, p)| !p.skip_inputs())
             {
-                match project.input_path(day) {
+                match project.input_path(year, day) {
                     Ok(Some(path)) => {
                         let output_name = format!("input-{}", project.username());
                         let dest = day_directory.join(output_name);

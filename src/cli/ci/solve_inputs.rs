@@ -43,6 +43,8 @@ impl SolveInputs {
             .find(|(_, p)| p.is_solver())
             .ok_or_else(|| anyhow!("Config does not specify at one participant as the solver"))?;
 
+        let year = config.year();
+
         'days: for day in 1..=25 {
             println!();
 
@@ -73,7 +75,7 @@ impl SolveInputs {
 
                 let input = entry.path().canonicalize()?;
                 if let Some(solution) = solver
-                    .solve(day, &input, Some(config.timeout()))
+                    .solve(year, day, &input, Some(config.timeout()))
                     .with_context(|| {
                         format!("Failed to solve day {} for input {}", day, filename)
                     })?
