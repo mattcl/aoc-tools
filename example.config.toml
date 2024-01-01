@@ -1,6 +1,8 @@
 [general]
 pipeline_url = "http://ci.papercode.net:8080/teams/main/pipelines/aoc2022"
 year = 2022
+timeout = 30
+max_inputs_per_bench = 5
 
 [participants.mattcl]
 username = "mattcl"

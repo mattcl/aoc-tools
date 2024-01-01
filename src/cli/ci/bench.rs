@@ -73,16 +73,24 @@ impl Bench {
 
         let solutions = Solutions::from_file(solution_file)?;
 
-        // get the official inputs
+        // get the first N official inputs
         let inputs_raw: Vec<_> = solutions
             .keys()
             .filter(|n| n.starts_with("input-"))
+            .take(config.max_inputs())
             .collect();
-        let inputs = inputs_raw.iter().join(",");
 
-        if inputs.is_empty() {
+        println!("> Using the selected inputs (max {}):", config.max_inputs());
+        for input in inputs_raw.iter() {
+            println!("    {}", input);
+        }
+        println!();
+
+        if inputs_raw.is_empty() {
             bail!("unexpected: no official inputs in solutions file");
         }
+
+        let inputs = inputs_raw.iter().join(",");
 
         // we need to filter out the projects that will not solve the current
         // day by attempting to get a solution for any of the inputs

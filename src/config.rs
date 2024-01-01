@@ -14,6 +14,10 @@ fn default_timeout() -> usize {
     30
 }
 
+fn default_max_inputs() -> usize {
+    5
+}
+
 #[derive(Debug, Clone, Eq, PartialEq, Deserialize)]
 pub struct Config {
     general: General,
@@ -26,6 +30,8 @@ pub struct General {
     pipeline_url: Url,
     #[serde(default = "default_timeout")]
     timeout: usize,
+    #[serde(default = "default_max_inputs")]
+    max_inputs_per_bench: usize,
 }
 
 impl Config {
@@ -50,5 +56,9 @@ impl Config {
 
     pub fn timeout(&self) -> usize {
         self.general.timeout
+    }
+
+    pub fn max_inputs(&self) -> usize {
+        self.general.max_inputs_per_bench
     }
 }
