@@ -1,4 +1,4 @@
-use std::{collections::BTreeMap, f64::EPSILON, path::PathBuf};
+use std::{collections::BTreeMap, path::PathBuf};
 
 use anyhow::{bail, Result};
 use clap::Args;
@@ -71,10 +71,10 @@ fn accumulated_graph(benches: &[BenchCSVRow]) -> Plot {
 
     let layout = Layout::new()
         .bar_mode(BarMode::Stack)
-        .title("Total runtime by day (lower is better)".into())
+        .title("Total runtime by day (lower is better)")
         .height(1000)
         .colorway(default_colorway())
-        .y_axis(Axis::new().title("Time (ms)".into()));
+        .y_axis(Axis::new().title("Time (ms)"));
     plot.set_layout(layout);
 
     // aggregate into a more useful datastructure
@@ -111,7 +111,7 @@ fn accumulated_graph(benches: &[BenchCSVRow]) -> Plot {
             .collect();
 
         // skip day if no results for any participant
-        if data.iter().all(|d| d - 0.0 <= EPSILON) {
+        if data.iter().all(|d| d - 0.0 <= f64::EPSILON) {
             continue;
         }
 
