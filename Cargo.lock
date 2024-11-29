@@ -1580,8 +1580,7 @@ dependencies = [
 [[package]]
 name = "plotly_kaleido"
 version = "0.10.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9aba29a8d739f39e09fecba28056860b87ff1f410873df2449cf33bbc1af9db0"
+source = "git+https://github.com/mattcl/plotly?branch=avoid-ruget#8e653a23d8f531517a07b1e5f07c3e75846f7fec"
 dependencies = [
  "base64 0.22.1",
  "directories",
@@ -3015,8 +3014,3 @@ dependencies = [
  "cc",
  "pkg-config",
 ]
-
-[[patch.unused]]
-name = "plotly_kaleido"
-version = "0.8.4"
-source = "git+https://github.com/mattcl/plotly?branch=avoid-ruget#0f655090b824a4de6ed8d265bf59887cbb4dd58b"
