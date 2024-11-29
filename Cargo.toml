@@ -1,10 +1,10 @@
 [package]
 name = "aoc-tools"
-version = "3.6.1"
+version = "3.7.0"
 edition = "2021"
 authors = ["Matt Chun-Lum <matt@questionable.engineering>"]
 description = "A collection of tools for an Advent of Code CI pipeline."
-rust-version = "1.71.0"
+rust-version = "1.74.1"
 license = "MIT"
 
 [profile.release]
