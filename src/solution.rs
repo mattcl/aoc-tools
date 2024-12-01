@@ -21,8 +21,8 @@ impl Solution {
     /// This is done to handle projects whose solvers do not produce typed
     /// solutions, or those whose types differ from the reference solutions.
     pub fn string_compare(&self, other: &Self) -> bool {
-        self.part_one.to_string().trim() == other.part_one.to_string().trim()
-            && self.part_two.to_string().trim() == other.part_two.to_string().trim()
+        compare_value(self.part_one(), other.part_one())
+            && compare_value(self.part_two(), other.part_two())
     }
 
     /// Compare a solution for the last day of the event.
@@ -53,6 +53,17 @@ impl Display for Solution {
     }
 }
 
+fn compare_value(left: &Value, right: &Value) -> bool {
+    match (left, right) {
+        (Value::Bool(l), Value::String(r)) => l.to_string().trim() == r.trim(),
+        (Value::Number(l), Value::String(r)) => l.to_string().trim() == r.trim(),
+        (Value::String(l), Value::Bool(r)) => l.trim() == r.to_string().trim(),
+        (Value::String(l), Value::Number(r)) => l.trim() == r.to_string().trim(),
+        (Value::String(l), Value::String(r)) => l.trim() == r.trim(),
+        _ => left.to_string().trim() == right.to_string().trim(),
+    }
+}
+
 #[derive(Debug, Default, Clone, PartialEq, Eq, Deserialize, Serialize)]
 pub struct Solutions(BTreeMap<String, Solution>);
 
@@ -74,5 +85,21 @@ impl Solutions {
     pub fn from_file<P: AsRef<Path>>(path: P) -> Result<Self> {
         let contents = std::fs::read_to_string(path).context("Failed to read solution file")?;
         serde_json::from_str(&contents).context("Failed to parse solution file")
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn string_compare() {
+        let input1 = "{\"part_one\": 15, \"part_two\": 16}";
+        let input2 = "{\"part_one\": \"15\", \"part_two\": \"16\"}";
+
+        let s1: Solution = serde_json::from_str(input1).unwrap();
+        let s2: Solution = serde_json::from_str(input2).unwrap();
+
+        assert!(s1.string_compare(&s2));
     }
 }
