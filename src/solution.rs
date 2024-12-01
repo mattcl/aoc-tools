@@ -96,10 +96,14 @@ mod tests {
     fn string_compare() {
         let input1 = "{\"part_one\": 15, \"part_two\": 16}";
         let input2 = "{\"part_one\": \"15\", \"part_two\": \"16\"}";
+        let input3 = "{\"part_one\": \"65\", \"part_two\": \"16\"}";
 
         let s1: Solution = serde_json::from_str(input1).unwrap();
         let s2: Solution = serde_json::from_str(input2).unwrap();
+        let s3: Solution = serde_json::from_str(input3).unwrap();
 
         assert!(s1.string_compare(&s2));
+        assert!(!s1.string_compare(&s3));
+        assert!(!s2.string_compare(&s3));
     }
 }
