@@ -7,6 +7,7 @@ mod ci;
 mod criterion_summary;
 mod graph;
 mod publish_benches;
+mod python_summary;
 mod unify_benches;
 mod update_participants;
 
@@ -60,6 +61,7 @@ pub enum Commands {
     CriterionSummary(criterion_summary::CriterionSummary),
     Graph(graph::Graph),
     PublishBenches(publish_benches::PublishBenches),
+    PythonSummary(python_summary::PythonSummary),
     UnifyBenches(unify_benches::UnifyBenches),
     UpdateParticipants(update_participants::UpdateParticipants),
 }
@@ -72,6 +74,7 @@ impl Commands {
             Self::CriterionSummary(cmd) => cmd.run(),
             Self::Graph(cmd) => cmd.run(),
             Self::PublishBenches(cmd) => cmd.run(),
+            Self::PythonSummary(cmd) => cmd.run(),
             Self::UnifyBenches(cmd) => cmd.run(),
             Self::UpdateParticipants(cmd) => cmd.run(),
         }
