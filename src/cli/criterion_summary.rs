@@ -5,9 +5,9 @@ use std::{
     path::PathBuf,
 };
 
-use anyhow::{anyhow, bail, Context, Result};
+use anyhow::{Context, Result, anyhow, bail};
 use clap::Args;
-use comfy_table::{presets::ASCII_BORDERS_ONLY_CONDENSED, CellAlignment, Table};
+use comfy_table::{CellAlignment, Table, presets::ASCII_BORDERS_ONLY_CONDENSED};
 use serde::{Deserialize, Serialize};
 use walkdir::WalkDir;
 

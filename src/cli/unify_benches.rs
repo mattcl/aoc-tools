@@ -1,11 +1,11 @@
 use std::path::PathBuf;
 
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
 use clap::Args;
 
 use crate::{
     attention,
-    bench_data::{load_benches, BenchCSVRow},
+    bench_data::{BenchCSVRow, load_benches},
     highlight,
     util::day_directory_name,
 };

@@ -2,8 +2,8 @@ use std::{collections::BTreeMap, path::Path};
 
 use anyhow::{Context, Result};
 use figment::{
-    providers::{Format, Toml},
     Figment,
+    providers::{Format, Toml},
 };
 use serde::Deserialize;
 use url::Url;

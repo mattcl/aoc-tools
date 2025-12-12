@@ -1,16 +1,16 @@
 use std::{collections::BTreeMap, path::PathBuf};
 
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
 use clap::Args;
 #[cfg(feature = "image_export")]
 use plotly::ImageFormat;
 use plotly::{
+    Bar, Layout, Plot,
     color::Rgb,
     layout::{Axis, BarMode},
-    Bar, Layout, Plot,
 };
 
-use crate::bench_data::{load_benches, BenchCSVRow};
+use crate::bench_data::{BenchCSVRow, load_benches};
 
 /// Generate graph(s) using a combined benches CSV.
 #[derive(Debug, Clone, Args)]

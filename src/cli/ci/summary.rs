@@ -2,7 +2,7 @@ use std::{fs::File, io::Write, path::PathBuf};
 
 use anyhow::{Context, Result};
 use clap::Args;
-use minijinja::{context, Environment};
+use minijinja::{Environment, context};
 
 use crate::{config::Config, success};
 

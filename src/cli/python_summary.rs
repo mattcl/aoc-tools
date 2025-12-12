@@ -5,9 +5,9 @@ use std::{
     path::PathBuf,
 };
 
-use anyhow::{bail, Context, Result};
+use anyhow::{Context, Result, bail};
 use clap::Args;
-use comfy_table::{presets::ASCII_BORDERS_ONLY_CONDENSED, CellAlignment, Table};
+use comfy_table::{CellAlignment, Table, presets::ASCII_BORDERS_ONLY_CONDENSED};
 use serde::{Deserialize, Serialize};
 
 /// Given a python output from a conforming project's pytest benchmark run,
