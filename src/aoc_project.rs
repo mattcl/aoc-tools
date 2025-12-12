@@ -153,10 +153,10 @@ impl AocProject {
 
         let raw_solution: Value = serde_json::from_slice(&output.stdout)?;
 
-        if let Value::String(ref msg) = raw_solution {
-            if msg == "not implemented" {
-                return Ok(None);
-            }
+        if let Value::String(ref msg) = raw_solution
+            && msg == "not implemented"
+        {
+            return Ok(None);
         }
 
         let solution: Solution =
