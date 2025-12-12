@@ -109,7 +109,7 @@ checksum = "34ac096ce696dc2fcabef30516bb13c0a68a11d30131d3df6f04711467681b04"
 
 [[package]]
 name = "aoc-tools"
-version = "3.9.0"
+version = "3.10.0"
 dependencies = [
  "anyhow",
  "assert_cmd",

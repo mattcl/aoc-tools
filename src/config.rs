@@ -14,6 +14,10 @@ fn default_timeout() -> usize {
     30
 }
 
+fn default_days() -> usize {
+    25
+}
+
 fn default_max_inputs() -> usize {
     5
 }
@@ -28,6 +32,8 @@ pub struct Config {
 pub struct General {
     year: usize,
     pipeline_url: Url,
+    #[serde(default = "default_days")]
+    days: usize,
     #[serde(default = "default_timeout")]
     timeout: usize,
     #[serde(default = "default_max_inputs")]
@@ -44,6 +50,10 @@ impl Config {
 
     pub fn participants(&self) -> &BTreeMap<String, AocProject> {
         &self.participants
+    }
+
+    pub fn days(&self) -> usize {
+        self.general.days
     }
 
     pub fn year(&self) -> usize {

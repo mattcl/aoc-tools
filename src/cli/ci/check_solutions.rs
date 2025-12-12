@@ -44,7 +44,7 @@ impl CheckSolutions {
 
         let year = config.year();
 
-        'days: for day in 1..=25 {
+        'days: for day in 1..=config.days() {
             println!();
             let day_directory_name = day_directory_name(day);
             let day_directory = self.inputs.join(&day_directory_name);
@@ -92,7 +92,7 @@ impl CheckSolutions {
                     .solve(year, day, &input_file, Some(config.timeout()))
                     .context("Failed to produce solution")?
                 {
-                    if !self.check_solution(day, input_name, solution, &computed) {
+                    if !self.check_solution(day, config.days(), input_name, solution, &computed) {
                         bail!("Solution incorrect");
                     }
                 } else {
@@ -125,7 +125,7 @@ impl CheckSolutions {
 
                 match project.solve(year, day, &input_file, Some(config.timeout())) {
                     Ok(Some(computed)) => {
-                        self.check_solution(day, input_name, solution, &computed);
+                        self.check_solution(day, config.days(), input_name, solution, &computed);
                     }
                     Ok(None) => {
                         // it should not be possible for us to get here but just
@@ -154,12 +154,13 @@ impl CheckSolutions {
     fn check_solution(
         &self,
         day: usize,
+        last_day: usize,
         input: &str,
         expected: &Solution,
         actual: &Solution,
     ) -> bool {
         // handle last day not having part two
-        let cmp = if day == 25 {
+        let cmp = if day == last_day {
             expected.last_day_compare(actual)
         } else {
             expected.string_compare(actual)

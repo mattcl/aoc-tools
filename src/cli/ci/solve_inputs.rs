@@ -45,7 +45,7 @@ impl SolveInputs {
 
         let year = config.year();
 
-        'days: for day in 1..=25 {
+        'days: for day in 1..=config.days() {
             println!();
 
             let day_directory_name = day_directory_name(day);
